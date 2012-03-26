@@ -103,8 +103,10 @@ public class GUI extends Applet {
         addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
                 boolean c;
+                int old;
 
-                c = false;
+                c   = false;
+                old = drag;
 
                 if (drag != -1)
                     c = true;
@@ -116,7 +118,9 @@ public class GUI extends Applet {
                     if (abstand(e.getX(), e.getY(), p.get(i).x, p.get(i).y)
                         <= radius) {
                         drag = i;
-                        repaint();
+
+                        if (old != drag)
+                            paint(getGraphics());
 
                         return;
                     }
