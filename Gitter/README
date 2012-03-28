@@ -1,0 +1,38 @@
+Gitter
+======
+
+ein Knoten ist ausgewaehlt
+--------------------------
+
+linke Maustaste: Knoten ziehen (drag & drop)
+
+mittlere Maustaste: Knoten schwingen lassen bzw. Schwingung beenden
+
+Strg-Taste: Knoten fixieren bzw. Fixierung wieder aufheben
+
+
+kein Knoten ausgewaehlt
+-----------------------
+
+linke Maustaste: Sicht auf das Gitter verschieben (drag & drop)
+
+rechte Maustaste: Knoten neu ausrichten
+                  (im Wechsel: alle Raender fixiert, nur zwei Seiten fixiert)
+
+mittlere Maustaste: Knoten in der Mitte des Gitters schwingen lassen
+
+Scrollrad: Zoomen
+
+
+Parameter
+---------
+
+erster (oberster) Slider: Ruheabstand
+
+zweiter Slider: Traegheit
+
+dritter Slider: Daempfung
+
+vierter Slider: Schwerkraft
+
+==> ueber den Tooltip kann der aktuelle Wert abgelesen werden
