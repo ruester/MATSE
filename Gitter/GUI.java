@@ -78,10 +78,10 @@ public class GUI extends JFrame {
 		r = new JSlider(70, 600, (int) (Gitter.getRuheabstand() * 1000.0));
 		s = new JSlider(0, 5000, (int) (Gitter.getSchwerkraft() * 100000.0));
 
-		d.setToolTipText("Daempfung = " + Double.toString(Gitter.getDaempfung()));
-		t.setToolTipText("Traegheit = " + Double.toString(Gitter.getTraegheit()));
-		r.setToolTipText("Ruheabstand = " + Double.toString(Gitter.getRuheabstand()));
-		s.setToolTipText("Schwerkraft = " + Double.toString(Gitter.getSchwerkraft()));
+		d.setToolTipText("Daempfung = " + Gitter.getDaempfung());
+		t.setToolTipText("Traegheit = " + Gitter.getTraegheit());
+		r.setToolTipText("Ruheabstand = " + Gitter.getRuheabstand());
+		s.setToolTipText("Schwerkraft = " + Gitter.getSchwerkraft());
 		
 		d.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -96,7 +96,7 @@ public class GUI extends JFrame {
 				}
 				
 				Gitter.setDaempfung(n);
-				a.setToolTipText("Daempfung = " + Double.toString(n));
+				a.setToolTipText("Daempfung = " + n);
 			}
 		});
 		
@@ -113,7 +113,7 @@ public class GUI extends JFrame {
 				}
 
 				Gitter.setTraegheit(n);
-				a.setToolTipText("Traegheit = " + Double.toString(n));
+				a.setToolTipText("Traegheit = " + n);
 			}
 		});
 		
@@ -125,7 +125,7 @@ public class GUI extends JFrame {
 				n = a.getValue() / 1000.0;
 				
 				Gitter.setRuheabstand(n);
-				a.setToolTipText("Ruheabstand = " + Double.toString(n));
+				a.setToolTipText("Ruheabstand = " + n);
 			}
 		});
 		
@@ -137,7 +137,7 @@ public class GUI extends JFrame {
 				n = a.getValue() / 100000.0;
 				
 				Gitter.setSchwerkraft(n);
-				a.setToolTipText("Schwerkraft = " + Double.toString(n));
+				a.setToolTipText("Schwerkraft = " + n);
 			}
 		});
 		
