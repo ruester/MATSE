@@ -31,7 +31,10 @@ public class GUI extends JFrame {
 	private JButton b;
 	private double offset_x = 30,
 				   offset_y = 50;
-	public boolean swing = false, swap = false;
+	public boolean swing = false,
+	               swap = false,
+	               show = false,
+	               color = false;
 	public int swing_x = 1, swing_y = 1;
     private boolean strg = false;
 
@@ -174,15 +177,40 @@ public class GUI extends JFrame {
             public void keyTyped(KeyEvent e) { }
 
 			public void keyReleased(KeyEvent e) {
+				int c = e.getKeyCode();
+
                 strg = false;
+
+                // Taste 'k'
+                if (c == 75)
+                	show = !show;
+
+                // Taste 'c'
+                if (c == 67)
+                	color = !color;
 			}
 
 			public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 17) {
-                    if (dragged != null)
-                        dragged.setFixed(!dragged.isFixed());
+				if (dragged == null)
+					return;
+				
+				int c = e.getKeyCode();
+				
+				// Strg-Taste
+                if (c == 17) {
+                    dragged.setFixed(!dragged.isFixed());
                     strg = true;
                 }
+                
+                // Entf-Taste
+                if (c == 127) {
+                	dragged.setRemoved(true);
+                	dragged = null;
+                }
+
+                // Ende-Taste
+                if (c == 35)
+                	dragged.setCut(true);
 			}
         });
 
@@ -192,8 +220,6 @@ public class GUI extends JFrame {
 
 				if (scale <= 2)
 					scale = 2;
-				
-				getGraphics().drawString(Double.toString(scale), 100, 100);
 			}
 		});
 		
@@ -265,7 +291,7 @@ public class GUI extends JFrame {
 				dragged = null;
 				x = e.getX();
 				y = e.getY();
-				
+
 				for (int y = 0; y < gitter.getHoehe(); y++) {
 					for (int x = 0; x < gitter.getBreite(); x++) {
 						double px, py, pz, x1, y1;
@@ -277,7 +303,8 @@ public class GUI extends JFrame {
 						x1 = (int) (px + py / 2.0);
 						y1 = getHeight() - (int) (pz + py / 2.0);
 						
-						if (abstand(x1, y1, (double) e.getX(), (double) e.getY()) <= radius * 2.0) {
+						if (!gitter.getKnoten(x, y).isRemoved()
+							&& abstand(x1, y1, (double) e.getX(), (double) e.getY()) <= radius * 2.0) {
 							dragged = gitter.getKnoten(x, y);
 							break;
 						}
@@ -305,8 +332,6 @@ public class GUI extends JFrame {
 				dx = e.getX() - x;
 				dy = y - e.getY();
 
-				getGraphics().drawString(dx + " " + dy, 100, 100);
-
 				dragged.setX(dragged.getX() + dx * Gitter.getRuheabstand() / 7.0);
 				dragged.setZ(dragged.getZ() + dy * Gitter.getRuheabstand() / 7.0);
 
@@ -315,18 +340,22 @@ public class GUI extends JFrame {
 			}
 		});
 	}
-	
-	private void bigPoint(Graphics g, int x, int y) {
-		g.fillArc(x, y, 2 * radius, 2 * radius, 0, 360);
+
+	private void bigPoint(Graphics g, int x, int y, int radius) {
+		g.fillArc(x - radius, y - radius, 2 * radius, 2 * radius, 0, 360);
 	}
 	
 	public void paint(Graphics g) {
 		Graphics bufg;
+		Color c;
+		Knoten k;
+		double r;
 
 		if (buffer == null)
 			return;
 
 		bufg = buffer.getGraphics();
+		r    = 0.0;
 		
 		bufg.setColor(Color.WHITE);
 		bufg.fillRect(0, 0, getWidth(), getHeight());
@@ -337,17 +366,39 @@ public class GUI extends JFrame {
 			for (int x = 0; x < gitter.getBreite(); x++) {
 				double x1, x2, y1, y2, z1, z2;
 				
-				x1 = toScreenX(gitter.getKnoten(x, y).getX());
-				y1 = toScreen(gitter.getKnoten(x, y).getY());
-				z1 = toScreenY(gitter.getKnoten(x, y).getZ());
+				k = gitter.getKnoten(x, y);
 				
-				for (Knoten i: gitter.getKnoten(x, y).getNachbarn()) {
+				if (k.isRemoved())
+					continue;
+				
+				x1 = toScreenX(k.getX());
+				y1 = toScreen(k.getY());
+				z1 = toScreenY(k.getZ());
+				
+				if (show) {
+					bufg.setColor(Color.black);
+					bigPoint(bufg, (int)(x1 + y1 / 2.0), getHeight() - (int)(z1 + y1 / 2.0), 2);
+				}
+				
+				for (Knoten i: k.getNachbarn()) {
+					if (i.isRemoved() || (k.isCut() && i.isCut()))
+						continue;
+					
 					x2 = toScreenX(i.getX());
 					y2 = toScreen(i.getY());
 					z2 = toScreenY(i.getZ());
 
-					bufg.setColor(Color.black);
-					bufg.drawLine((int)(x1 + y1 / 2.0), getHeight() - (int)(z1 + y1 / 2.0), (int)(x2 + y2 / 2.0), getHeight() - (int)(z2 + y2 / 2.0));
+					if (color) {
+						r = k.abstand(i) - Gitter.getRuheabstand();
+
+						if (r > 0.0)
+							r = MIN(r * 100.0, 255.0);
+					}
+
+					c = new Color((int) r, 0, 0);
+					bufg.setColor(c);
+					bufg.drawLine((int)(x1 + y1 / 2.0), getHeight() - (int)(z1 + y1 / 2.0),
+							      (int)(x2 + y2 / 2.0), getHeight() - (int)(z2 + y2 / 2.0));
 				}
 			}
 		}
@@ -360,8 +411,11 @@ public class GUI extends JFrame {
 			z1 = toScreenY(dragged.getZ());
 			
 			if (!swing) {
-				bufg.setColor(Color.black);
-				bigPoint(bufg, (int)(x1 + y1 / 2.0) - radius, getHeight() - (int)(z1 + y1 / 2.0) - radius);
+				if (show)
+					bufg.setColor(Color.red);
+				else
+					bufg.setColor(Color.black);
+				bigPoint(bufg, (int)(x1 + y1 / 2.0), getHeight() - (int)(z1 + y1 / 2.0), radius);
 			}
 		}
 		

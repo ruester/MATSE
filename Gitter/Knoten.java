@@ -4,28 +4,31 @@ public class Knoten extends Thread {
 	private Vektor pos;
 	public Vektor g;
 	private ArrayList<Knoten> nachbarn;
-	private boolean fixed, dragged;
+	private boolean fixed, dragged, removed, cut;
 
 	public Knoten() {
-		this.nachbarn = new ArrayList<Knoten>();
-		this.pos      = new Vektor();
-		this.g        = new Vektor();
-		this.fixed    = false;
-		this.dragged  = false;
+		nachbarn = new ArrayList<Knoten>();
+		pos      = new Vektor();
+		g        = new Vektor();
+		fixed    = dragged = removed = cut = false;
 	}
 	
-	public Knoten(double x, double y, double z, boolean fixed) {
-		this.nachbarn = new ArrayList<Knoten>();
-		this.pos      = new Vektor(x, y, z);
-		this.g        = new Vektor();
-		this.fixed    = fixed;
-		this.dragged  = false;
+	public Knoten(double x, double y, double z, boolean f) {
+		nachbarn = new ArrayList<Knoten>();
+		pos      = new Vektor(x, y, z);
+		g        = new Vektor();
+		fixed    = f;
+		dragged  = removed = cut = false;
 	}
 	
 	public void addNachbar(Knoten k) {
 		nachbarn.add(k);
 	}
-
+	
+	public void clearNachbarn() {
+		nachbarn.clear();
+	}
+	
 	private Vektor getRichtungsvektor(Knoten a) {
 		return new Vektor(a.getX() - pos.getX(), a.getY() - pos.getY(), a.getZ() - pos.getZ());
 	}
@@ -50,12 +53,6 @@ public class Knoten extends Thread {
 		v.setY(v.getY() - h.getY());
 		v.setZ(v.getZ() - h.getZ());
 
-		/*
-		v.setX(v.getX() * Gitter.getDaempfung());
-		v.setY(v.getY() * Gitter.getDaempfung());
-		v.setZ(v.getZ() * Gitter.getDaempfung());
-		*/
-
 		return v;
 	}
 	
@@ -66,10 +63,10 @@ public class Knoten extends Thread {
 			try {
 				sleep(10);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				return;
 			}
 			
-			if (dragged || fixed)
+			if (dragged || fixed || removed)
 				continue;
 
 			v.setX(0.0);
@@ -77,7 +74,8 @@ public class Knoten extends Thread {
 			v.setZ(0.0);
 			
 			for (Knoten i : nachbarn)
-				v.add(getKraftvektor(i));
+				if (!i.removed && !(cut && i.cut))
+					v.add(getKraftvektor(i));
 			
 			g.add(v);
 			
@@ -122,9 +120,25 @@ public class Knoten extends Thread {
 	public void setFixed(boolean fixed) {
 		this.fixed = fixed;
 	}
+	
+	public void setRemoved(boolean r) {
+		this.removed = r;
+	}
+	
+	public void setCut(boolean c) {
+		this.cut = c;
+	}
 
 	public boolean isDragged() {
 		return dragged;
+	}
+	
+	public boolean isRemoved() {
+		return removed;
+	}
+	
+	public boolean isCut() {
+		return cut;
 	}
 
 	public void setDragged(boolean dragged) {
@@ -137,5 +151,9 @@ public class Knoten extends Thread {
 	
 	public Vektor getPosition() {
 		return pos;
+	}
+	
+	public double abstand(Knoten k) {
+		return Vektor.abstand(pos, k.pos);
 	}
 }

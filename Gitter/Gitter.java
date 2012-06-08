@@ -78,6 +78,8 @@ public class Gitter {
 				knoten[y][x].setY(py);
 				knoten[y][x].setZ(pz);
 				knoten[y][x].setFixed(fixed);
+				knoten[y][x].setRemoved(false);
+				knoten[y][x].setCut(false);
 				knoten[y][x].g.setX(0.0);
 				knoten[y][x].g.setY(0.0);
 				knoten[y][x].g.setZ(0.0);
@@ -117,6 +119,8 @@ public class Gitter {
 				knoten[y][x].setY(py);
 				knoten[y][x].setZ(pz);
 				knoten[y][x].setFixed(fixed);
+				knoten[y][x].setRemoved(false);
+				knoten[y][x].setCut(false);
 				knoten[y][x].g.setX(0.0);
 				knoten[y][x].g.setY(0.0);
 				knoten[y][x].g.setZ(0.0);
@@ -131,6 +135,8 @@ public class Gitter {
 	public void initNachbarn() {
 		for (int y = 0; y < hoehe; y++) {
 			for (int x = 0; x < breite; x++) {
+				knoten[y][x].clearNachbarn();
+				
 				if (x != 0)
 					knoten[y][x].addNachbar(knoten[y][x - 1]);
 
