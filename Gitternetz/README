@@ -1,14 +1,20 @@
-Gitter
-======
+Gitternetz
+==========
 
 ein Knoten ist ausgewaehlt
 --------------------------
 
-linke Maustaste: Knoten ziehen (drag & drop)
+linke Maustaste: Knoten verschieben (drag & drop)
 
 mittlere Maustaste: Knoten schwingen lassen bzw. Schwingung beenden
 
 Strg-Taste: Knoten fixieren bzw. Fixierung wieder aufheben
+
+Entf-Taste: Knoten loeschen
+
+Ende-Taste: Knotenverbindung loeschen
+            (gewuenschter Nachbarknoten muss auch mit Ende-Taste
+             "markiert" werden, erst dann wird die Verbindung geloescht)
 
 
 kein Knoten ausgewaehlt
@@ -17,11 +23,17 @@ kein Knoten ausgewaehlt
 linke Maustaste: Sicht auf das Gitter verschieben (drag & drop)
 
 rechte Maustaste: Knoten neu ausrichten
-                  (im Wechsel: alle Raender fixiert, nur zwei Seiten fixiert)
+                  (im Wechsel: alle Raender fixiert; nur zwei Raender fixiert)
 
-mittlere Maustaste: Knoten in der Mitte des Gitters schwingen lassen
+mittlere Maustaste: mittleren Knoten des Gitters schwingen lassen
+                    bzw. Schwingung beenden
 
 Scrollrad: Zoomen
+
+Taste 'k': Knoten ein-/ausblenden
+
+Taste 'c': Knotenverbindungen einfaerben
+           (bei "Belastung" wird die Verbindung rot eingefaerbt)
 
 
 Parameter
